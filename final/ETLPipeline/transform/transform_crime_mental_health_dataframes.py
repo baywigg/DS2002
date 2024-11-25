@@ -32,7 +32,9 @@ def transform_crime_mental_health_dataframes(crime_df, mental_health_df):
     combined =  pd.merge(mental_health_df, crime_df, on=["Entity", "Year"])
     # Get set of countries that are in the combined dataset
     entities = set(combined["Entity"].unique())
-    return combined, entities
+    # Get country to year mapping to use with gapminder dataset
+    country_to_years = get_countries_to_years(combined)
+    return combined, entities, country_to_years
 
 def remove_columns(crime_df, mental_health_df):
     # Remove unneeded columns, and coerce other columns to ensure numeric
@@ -54,3 +56,11 @@ def remove_columns(crime_df, mental_health_df):
         crime_df[col] = pd.to_numeric(crime_df[col], errors="coerce")
 
     return crime_df, mental_health_df
+
+def get_countries_to_years(df):
+    # Create defaultdict of type set to store Entity : Years
+    from collections import defaultdict
+    c = defaultdict(set)
+    for _, row in df.iterrows():
+        c[row["Entity"]].add(row["Year"])
+    return c

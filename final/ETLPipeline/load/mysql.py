@@ -12,14 +12,20 @@ host = os.getenv("DB_HOST")
 
 def load_dataframe_to_mysql(df, table_name, database):
     # Create database and connection
-    create_database(database)
+    try:
+        create_database(database)
+    except Exception as e:
+        raise
     engine = create_connection(database)
     # Load into mySQL DB
     df.to_sql(table_name, con=engine, if_exists='replace', index=False)
 
 
 def create_database(database):
-    connection = pymysql.connect(host=host, user="root", password=password)
+    try:
+        connection = pymysql.connect(host=host, user="root", password=password)
+    except Exception as e:
+        raise
     try:
         with connection.cursor() as cursor:
             cursor.execute(f"CREATE DATABASE IF NOT EXISTS {database};")

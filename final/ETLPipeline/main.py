@@ -1,0 +1,3 @@
+from extract.get_data_from_kaggle import download_kaggle_datasets
+
+download_kaggle_datasets()
